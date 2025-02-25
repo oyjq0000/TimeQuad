@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -29,13 +29,23 @@ jobs:
             exit 1
           fi
           echo "Build output found in dist directory"
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
-          path: dist
+          path: dist  # 明确指定上传的路径
+
+  deploy:
+    needs: build  # 依赖构建作业
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write  # 部署作业需要独立权限
+      id-token: write
+    environment:
+      name: github-pages  # 关联 GitHub Pages 环境
+      url: ${{ steps.deployment.outputs.page_url }}  # 输出部署后的 URL
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v3  # 配置 Pages，应在部署作业中
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
