@@ -33,7 +33,7 @@ export const useTasks = () => {
     }
   }, [tasks, isInitialized]);
 
-  const addTask = (title: string, priority: TaskPriority, estimatedMinutes: number, timeUnit: TimeUnit) => {
+  const addTask = (title: string, priority: TaskPriority, estimatedMinutes: number, timeUnit: TimeUnit, pomodoroMinutes: number) => {
     const newTask: Task = {
       id: Date.now().toString(),
       title,
@@ -43,7 +43,8 @@ export const useTasks = () => {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       estimatedMinutes,
-      timeUnit
+      timeUnit,
+      pomodoroMinutes
     };
     setTasks([...tasks, newTask]);
   };
@@ -92,6 +93,14 @@ export const useTasks = () => {
   };
 
   const getCompletedTasks = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return tasks
+      .filter(task => task.completed && task.completedAt && task.completedAt >= today.getTime())
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  };
+
+  const getAllCompletedTasks = () => {
     return tasks
       .filter(task => task.completed)
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -105,6 +114,7 @@ export const useTasks = () => {
     incrementPomodoroCount,
     getTasksByQuadrant,
     getCompletedTasks,
+    getAllCompletedTasks,
     startTask
   };
 };

@@ -22,6 +22,8 @@ export interface Task {
   endTime?: number;
   estimatedMinutes: number;
   timeUnit: TimeUnit;
+  completedAt?: number;
+  pomodoroMinutes: number;
 }
 
 export interface ActivePomodoro {

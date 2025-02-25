@@ -1,0 +1,195 @@
+.task-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+/* 紧急且重要的任务卡片样式 */
+.quadrant-urgent-important .task-card {
+  border-color: #ff4d4f;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.12);
+}
+
+/* 重要不紧急的任务卡片样式 */
+.quadrant-not-urgent-important .task-card {
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.12);
+}
+
+/* 紧急不重要的任务卡片样式 */
+.quadrant-urgent-not-important .task-card {
+  border-color: #ffa940;
+  box-shadow: 0 2px 8px rgba(255, 169, 64, 0.12);
+}
+
+/* 不紧急不重要的任务卡片样式 */
+.quadrant-not-urgent-not-important .task-card {
+  border-color: #52c41a;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.12);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.task-card.active {
+  border: 2px solid #4CAF50;
+  background-color: #f8fff8;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.checkbox-container {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  user-select: none;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  border-color: #4CAF50;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.task-title.completed {
+  color: #888;
+  text-decoration: line-through;
+} 
+
+.task-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.pomodoro-count {
+  display: flex;
+  align-items: center;
+  color: #666;
+}
+
+.pomodoro-icon {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.time-info {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: right;
+}
+
+.time-info div {
+  margin: 4px 0;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.action-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.start-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.start-button:hover {
+  background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #da190b;
+}

@@ -5,6 +5,9 @@ import { usePomodoro } from './hooks/usePomodoro';
 import TaskCard from './components/TaskCard';
 import PomodoroModal from './components/PomodoroModal';
 import TaskFormModal from './components/TaskFormModal';
+import SettingsModal from './components/SettingsModal';
+import HistoryTasksModal from './components/HistoryTasksModal';
+import StatisticsModal from './components/StatisticsModal';
 import './App.css';
 
 function App() {
@@ -13,12 +16,22 @@ function App() {
   const [estimatedMinutes, setEstimatedMinutes] = useState<number>(25);
   const [timeUnit, setTimeUnit] = useState<TimeUnit>(TimeUnit.MINUTES);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
   const { tasks, addTask, updateTask, deleteTask, incrementPomodoroCount, getTasksByQuadrant, getCompletedTasks, startTask } = useTasks();
-  const { activePomodoro, timeLeft, startPomodoro, pausePomodoro, resumePomodoro, stopPomodoro } = usePomodoro(incrementPomodoroCount);
+  const { activePomodoro, timeLeft, startPomodoro, pausePomodoro, resumePomodoro, stopPomodoro, pomodoroMinutes, updatePomodoroMinutes } = usePomodoro(incrementPomodoroCount);
 
   const handleAddTask = (title: string, priority: TaskPriority, estimatedMinutes: number, timeUnit: TimeUnit) => {
     const minutes = timeUnit === TimeUnit.HOURS ? estimatedMinutes * 60 : estimatedMinutes;
-    addTask(title, priority, minutes, timeUnit);
+    addTask(title, priority, minutes, timeUnit, pomodoroMinutes);
+  };
+
+  const handleReset = () => {
+    // 清除所有本地存储的数据
+    localStorage.clear();
+    // 重新加载页面以重置所有状态
+    window.location.reload();
   };
 
   const quadrants = getTasksByQuadrant();
@@ -26,8 +39,13 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>四象限任务管理</h1>
-        <button className="add-task-button" onClick={() => setIsModalOpen(true)}>添加任务</button>
+        <h1>TimeQuad - 四象限任务管理</h1>
+        <div className="header-buttons">
+          <button className="add-task-button" onClick={() => setIsModalOpen(true)}>添加任务</button>
+          <button className="history-button" onClick={() => setIsHistoryModalOpen(true)}>历史任务</button>
+          <button className="statistics-button" onClick={() => setIsStatisticsModalOpen(true)}>统计</button>
+          <button className="settings-button" onClick={() => setIsSettingsModalOpen(true)}>设置</button>
+        </div>
       </header>
       {activePomodoro && (
         <PomodoroModal
@@ -44,10 +62,32 @@ function App() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleAddTask}
+        pomodoroMinutes={pomodoroMinutes}
+      />
+
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        pomodoroMinutes={pomodoroMinutes}
+        onSave={updatePomodoroMinutes}
+        onReset={handleReset}
+      />
+
+      <HistoryTasksModal
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+        tasks={getCompletedTasks()}
+        onUpdate={updateTask}
+        onDelete={deleteTask}
+        onStartPomodoro={(taskId) => {
+          startTask(taskId);
+          startPomodoro(taskId);
+        }}
+        activeTaskId={activePomodoro?.taskId}
       />
 
       <div className="grid-container">
-        <div className="quadrant">
+        <div className="quadrant quadrant-urgent-important">
           <h2>紧急且重要</h2>
           <p className="quadrant-description">需要立即处理的任务，直接影响目标达成</p>
           {quadrants.urgentImportant.map(task => (
@@ -64,7 +104,7 @@ function App() {
             />
           ))}
         </div>
-        <div className="quadrant">
+        <div className="quadrant quadrant-not-urgent-important">
           <h2>重要不紧急</h2>
           <p className="quadrant-description">需要规划和安排的任务，对长期目标至关重要</p>
           {quadrants.notUrgentImportant.map(task => (
@@ -81,7 +121,7 @@ function App() {
             />
           ))}
         </div>
-        <div className="quadrant">
+        <div className="quadrant quadrant-urgent-not-important">
           <h2>紧急不重要</h2>
           <p className="quadrant-description">需要及时处理但可考虑委托他人的任务</p>
           {quadrants.urgentNotImportant.map(task => (
@@ -98,7 +138,7 @@ function App() {
             />
           ))}
         </div>
-        <div className="quadrant">
+        <div className="quadrant quadrant-not-urgent-not-important">
           <h2>不紧急不重要</h2>
           <p className="quadrant-description">可以考虑延后或取消的任务，避免时间浪费</p>
           {quadrants.notUrgentNotImportant.map(task => (
@@ -158,6 +198,11 @@ function App() {
           </div>
         </div>
       </footer>
+      <StatisticsModal
+        isOpen={isStatisticsModalOpen}
+        onClose={() => setIsStatisticsModalOpen(false)}
+        tasks={tasks}
+      />
     </div>
   );
 }

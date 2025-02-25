@@ -1,0 +1,70 @@
+.statistics-modal {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.statistics-content {
+  padding: 20px;
+}
+
+.time-range-section {
+  margin-bottom: 30px;
+}
+
+.time-range-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.quadrant-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.quadrant-stat-item {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quadrant-stat-item h4 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+  font-size: 1.1em;
+}
+
+.quadrant-stat-item p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.suggestions-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.suggestions-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.suggestions-list li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff3e0;
+  border-radius: 6px;
+  color: #795548;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
