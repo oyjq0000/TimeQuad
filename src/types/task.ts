@@ -5,6 +5,11 @@ export enum TaskPriority {
   NOT_URGENT_NOT_IMPORTANT = 'NOT_URGENT_NOT_IMPORTANT'
 }
 
+export enum TimeUnit {
+  MINUTES = 'MINUTES',
+  HOURS = 'HOURS'
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -13,6 +18,10 @@ export interface Task {
   pomodoroCount: number;
   createdAt: number;
   updatedAt: number;
+  startTime?: number;
+  endTime?: number;
+  estimatedMinutes: number;
+  timeUnit: TimeUnit;
 }
 
 export interface ActivePomodoro {

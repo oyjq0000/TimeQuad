@@ -1,23 +1,39 @@
 import { useState, useEffect } from 'react';
-import { Task, TaskPriority } from '../types/task';
+import { Task, TaskPriority, TimeUnit } from '../types/task';
 
-const TASKS_STORAGE_KEY = 'pomodoro_tasks';
+const TASKS_STORAGE_KEY = 'timequad_tasks';
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
+    try {
+      const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+      if (storedTasks) {
+        const parsedTasks = JSON.parse(storedTasks);
+        if (Array.isArray(parsedTasks)) {
+          setTasks(parsedTasks);
+        } else {
+          console.error('存储的任务数据格式不正确');
+          setTasks([]);
+        }
+      }
+    } catch (error) {
+      console.error('读取任务数据时出错:', error);
+      setTasks([]);
+    } finally {
+      setIsInitialized(true);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
-  }, [tasks]);
+    if (isInitialized) {
+      localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+    }
+  }, [tasks, isInitialized]);
 
-  const addTask = (title: string, priority: TaskPriority) => {
+  const addTask = (title: string, priority: TaskPriority, estimatedMinutes: number, timeUnit: TimeUnit) => {
     const newTask: Task = {
       id: Date.now().toString(),
       title,
@@ -25,7 +41,9 @@ export const useTasks = () => {
       completed: false,
       pomodoroCount: 0,
       createdAt: Date.now(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      estimatedMinutes,
+      timeUnit
     };
     setTasks([...tasks, newTask]);
   };
@@ -33,7 +51,12 @@ export const useTasks = () => {
   const updateTask = (taskId: string, updates: Partial<Task>) => {
     setTasks(tasks.map(task =>
       task.id === taskId
-        ? { ...task, ...updates, updatedAt: Date.now() }
+        ? { 
+            ...task, 
+            ...updates, 
+            updatedAt: Date.now(),
+            completedAt: updates.completed ? Date.now() : task.completedAt 
+          }
         : task
     ));
   };
@@ -45,18 +68,33 @@ export const useTasks = () => {
   const incrementPomodoroCount = (taskId: string) => {
     setTasks(tasks.map(task =>
       task.id === taskId
-        ? { ...task, pomodoroCount: task.pomodoroCount + 1, updatedAt: Date.now() }
+        ? { ...task, pomodoroCount: task.pomodoroCount + 1, updatedAt: Date.now(), endTime: Date.now() }
+        : task
+    ));
+  };
+
+  const startTask = (taskId: string) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, startTime: task.startTime || Date.now() }
         : task
     ));
   };
 
   const getTasksByQuadrant = () => {
+    const incompleteTasks = tasks.filter(task => !task.completed);
     return {
-      urgentImportant: tasks.filter(task => task.priority === TaskPriority.URGENT_IMPORTANT),
-      notUrgentImportant: tasks.filter(task => task.priority === TaskPriority.NOT_URGENT_IMPORTANT),
-      urgentNotImportant: tasks.filter(task => task.priority === TaskPriority.URGENT_NOT_IMPORTANT),
-      notUrgentNotImportant: tasks.filter(task => task.priority === TaskPriority.NOT_URGENT_NOT_IMPORTANT)
+      urgentImportant: incompleteTasks.filter(task => task.priority === TaskPriority.URGENT_IMPORTANT),
+      notUrgentImportant: incompleteTasks.filter(task => task.priority === TaskPriority.NOT_URGENT_IMPORTANT),
+      urgentNotImportant: incompleteTasks.filter(task => task.priority === TaskPriority.URGENT_NOT_IMPORTANT),
+      notUrgentNotImportant: incompleteTasks.filter(task => task.priority === TaskPriority.NOT_URGENT_NOT_IMPORTANT)
     };
+  };
+
+  const getCompletedTasks = () => {
+    return tasks
+      .filter(task => task.completed)
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
   };
 
   return {
@@ -65,6 +103,8 @@ export const useTasks = () => {
     updateTask,
     deleteTask,
     incrementPomodoroCount,
-    getTasksByQuadrant
+    getTasksByQuadrant,
+    getCompletedTasks,
+    startTask
   };
 };
