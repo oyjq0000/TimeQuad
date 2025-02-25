@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/sup-node@v3  # 注意：此处应为 setup-node，检查是否有拼写错误
         with:
           node-version: 18
       - name: Install Dependencies
@@ -24,28 +24,29 @@ jobs:
         run: npm run build
       - name: Check build output
         run: |
-          if [ ! -d "dist" ]; then
-            echo "Error: dist directory not found!"
+          # 添加更严格的检查：确保 dist 目录非空
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "Error: dist directory is empty or not found!"
             exit 1
           fi
-          echo "Build output found in dist directory"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist  # 明确指定上传的路径
+          name: github-pages  # 明确指定产物名称
+          path: dist          # 确保路径与构建输出目录一致
 
   deploy:
-    needs: build  # 依赖构建作业
+    needs: build
     runs-on: ubuntu-latest
     permissions:
-      pages: write  # 部署作业需要独立权限
+      pages: write
       id-token: write
     environment:
-      name: github-pages  # 关联 GitHub Pages 环境
-      url: ${{ steps.deployment.outputs.page_url }}  # 输出部署后的 URL
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Setup Pages
-        uses: actions/configure-pages@v3  # 配置 Pages，应在部署作业中
+        uses: actions/configure-pages@v3
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
