@@ -11,10 +11,6 @@ import StatisticsModal from './components/StatisticsModal';
 import './App.css';
 
 function App() {
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState<TaskPriority>(TaskPriority.URGENT_IMPORTANT);
-  const [estimatedMinutes, setEstimatedMinutes] = useState<number>(25);
-  const [timeUnit, setTimeUnit] = useState<TimeUnit>(TimeUnit.MINUTES);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);

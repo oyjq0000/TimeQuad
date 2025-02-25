@@ -1,5 +1,5 @@
 import React from 'react';
-import { Task, TaskPriority, TimeUnit } from '../types/task';
+import { Task, TimeUnit } from '../types/task';
 import './TaskCard.css';
 
 /**

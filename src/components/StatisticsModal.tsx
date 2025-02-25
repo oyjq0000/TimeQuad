@@ -21,21 +21,6 @@ interface QuadrantStats {
 }
 
 /**
- * 不同时间范围的统计数据接口
- */
-interface TimeRangeStats {
-  daily: {
-    [key in TaskPriority]: QuadrantStats;  // 每日统计
-  };
-  weekly: {
-    [key in TaskPriority]: QuadrantStats;  // 每周统计
-  };
-  monthly: {
-    [key in TaskPriority]: QuadrantStats;  // 每月统计
-  };
-}
-
-/**
  * 根据任务优先级获取象限名称
  * @param priority - 任务优先级
  * @returns 对应的象限名称
