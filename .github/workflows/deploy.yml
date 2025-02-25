@@ -38,11 +38,12 @@ jobs:
     needs: build  # 依赖构建作业
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write  # 部署作业需要独立权限
       id-token: write
     environment:
       name: github-pages  # 关联 GitHub Pages 环境
-      url: ${{ steps.deployment.outputs.page_url }}  # 输出部署后的 URL
+      url: ${{ steps.deployment.outputs.base_url }}  # 输出部署后的 URL
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v3  # 配置 Pages，应在部署作业中
