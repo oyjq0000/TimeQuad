@@ -34,6 +34,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: gh-pages-artifact
           path: dist  
 
   deploy:
@@ -49,8 +50,14 @@ jobs:
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v3  # 配置 Pages，应在部署作业中
+      - name: Set working directory
+        run: cd ${{ github.workspace }}
       - name: Check downloaded artifact
-        run: ls -R ${{ github.workspace }}
+        run: |
+            echo "Current directory: $(pwd)"
+            ls -R
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        with:
+          artifact: gh-pages-artifact
