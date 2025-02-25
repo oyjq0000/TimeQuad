@@ -32,7 +32,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist  # 明确指定上传的路径
+          path: dist  
 
   deploy:
     needs: build  # 依赖构建作业
