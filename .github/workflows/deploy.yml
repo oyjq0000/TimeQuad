@@ -55,6 +55,11 @@ jobs:
         with:
           name: gh-pages-artifact
           path: dist  # 将 artifact 解压到 dist 目录
+      - name: Extract artifact (if needed)
+        run: |
+          cd dist
+          tar -xvf artifact.tar  # 解压 artifact.tar
+          rm artifact.tar  # 删除压缩文件
       - name: Check downloaded artifact
         run: |
             echo "Current directory: $(pwd)"
@@ -63,4 +68,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v3
         with:
-          artifact: gh-pages-artifact
+          artifact_name: gh-pages-artifact
