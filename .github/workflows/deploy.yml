@@ -22,6 +22,13 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      - name: Check build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Error: dist directory not found!"
+            exit 1
+          fi
+          echo "Build output found in dist directory"
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
