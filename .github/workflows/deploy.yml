@@ -50,7 +50,6 @@ jobs:
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v3  # 配置 Pages，应在部署作业中
-      - name: Download artifact
       - name: Check downloaded artifact
         run: |
             echo "Current directory: $(pwd)"
