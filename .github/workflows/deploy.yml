@@ -25,6 +25,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: gh-pages-artifact
           path: dist  
 
   deploy:
